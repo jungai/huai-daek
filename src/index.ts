@@ -5,8 +5,8 @@ import got from "got";
 const DISCORD_URL = process.env.DISCORD_URL || "prayut";
 const SCRAPER_URL = process.env.SCRAPER_URL || "prayut";
 
-const raw = await got.get(SCRAPER_URL);
-const $ = load(raw.body);
+const { body: htmlStr } = await got.get(SCRAPER_URL);
+const $ = load(htmlStr);
 
 // find first lotto div
 const list = $(".lotto-check__article")
@@ -24,7 +24,7 @@ if (!latest) {
 const title = latest[0];
 const date = `ประจำวันที่ ${latest[1]} ${latest[2]} ${latest[3]}`;
 const firstPrice = latest[7];
-const frontThreeDigits = `${latest[11]} , ${latest[12]}`;
+const frontThreeDigits = `${latest[11]}, ${latest[12]}`;
 const backThreeDigits = `${latest[16]}, ${latest[17]}`;
 const backTwoDigits = latest[21];
 
@@ -35,6 +35,10 @@ await got.post(DISCORD_URL, {
       {
         title,
         description: date,
+        url: SCRAPER_URL,
+        thumbnail: {
+          url: "https://media3.giphy.com/media/SsTcO55LJDBsI/giphy.gif?cid=ecf05e47h4tz7lmoftkuebewdesy7j1bcvsna0fqvhobhfr4&rid=giphy.gif&ct=g",
+        },
         fields: [
           {
             name: "🚀 รางวัลที่ 1",
