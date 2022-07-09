@@ -1,0 +1,19 @@
+{
+  "name": "huai-daek-pow",
+  "version": "1.0.0",
+  "author": "jungai",
+  "main": "dist/index.js",
+  "type": "module",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
+    "dotenv": "^16.0.1",
+    "got": "^12"
+  },
+  "devDependencies": {
+    "typescript": "^4.7.4"
+  },
+  "scripts": {
+    "build": "tsc",
+    "task": "node ."
+  }
+}
