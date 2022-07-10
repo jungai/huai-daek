@@ -3,6 +3,9 @@ import { load } from "cheerio";
 import got from "got";
 const DISCORD_URL = process.env.DISCORD_URL || "prayut";
 const SCRAPER_URL = process.env.SCRAPER_URL || "prayut";
+if (DISCORD_URL === "prayut" || SCRAPER_URL === "prayut") {
+    throw new Error("I HERE");
+}
 const { body: htmlStr } = await got.get(SCRAPER_URL);
 const $ = load(htmlStr);
 // find first lotto div
@@ -22,7 +25,7 @@ const frontThreeDigits = `${latest[11]}, ${latest[12]}`;
 const backThreeDigits = `${latest[16]}, ${latest[17]}`;
 const backTwoDigits = latest[21];
 // send to discord
-await got.post(DISCORD_URL, {
+await Promise.all(DISCORD_URL.split(",").map(async (url) => await got.post(url, {
     json: {
         embeds: [
             {
@@ -53,4 +56,4 @@ await got.post(DISCORD_URL, {
             },
         ],
     },
-});
+})));

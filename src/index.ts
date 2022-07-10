@@ -5,6 +5,10 @@ import got from "got";
 const DISCORD_URL = process.env.DISCORD_URL || "prayut";
 const SCRAPER_URL = process.env.SCRAPER_URL || "prayut";
 
+if (DISCORD_URL === "prayut" || SCRAPER_URL === "prayut") {
+  throw new Error("I HERE");
+}
+
 const { body: htmlStr } = await got.get(SCRAPER_URL);
 const $ = load(htmlStr);
 
@@ -29,35 +33,40 @@ const backThreeDigits = `${latest[16]}, ${latest[17]}`;
 const backTwoDigits = latest[21];
 
 // send to discord
-await got.post(DISCORD_URL, {
-  json: {
-    embeds: [
-      {
-        title,
-        description: date,
-        url: SCRAPER_URL,
-        thumbnail: {
-          url: "https://media3.giphy.com/media/SsTcO55LJDBsI/giphy.gif?cid=ecf05e47h4tz7lmoftkuebewdesy7j1bcvsna0fqvhobhfr4&rid=giphy.gif&ct=g",
+await Promise.all(
+  DISCORD_URL.split(",").map(
+    async (url) =>
+      await got.post(url, {
+        json: {
+          embeds: [
+            {
+              title,
+              description: date,
+              url: SCRAPER_URL,
+              thumbnail: {
+                url: "https://media3.giphy.com/media/SsTcO55LJDBsI/giphy.gif?cid=ecf05e47h4tz7lmoftkuebewdesy7j1bcvsna0fqvhobhfr4&rid=giphy.gif&ct=g",
+              },
+              fields: [
+                {
+                  name: "🚀 รางวัลที่ 1",
+                  value: firstPrice,
+                },
+                {
+                  name: "🔥 เลขหน้า 3 ตัว",
+                  value: frontThreeDigits,
+                },
+                {
+                  name: "🔥 เลขท้าย 3 ตัว",
+                  value: backThreeDigits,
+                },
+                {
+                  name: "🔥 เลขท้าย 2 ตัว",
+                  value: backTwoDigits,
+                },
+              ],
+            },
+          ],
         },
-        fields: [
-          {
-            name: "🚀 รางวัลที่ 1",
-            value: firstPrice,
-          },
-          {
-            name: "🔥 เลขหน้า 3 ตัว",
-            value: frontThreeDigits,
-          },
-          {
-            name: "🔥 เลขท้าย 3 ตัว",
-            value: backThreeDigits,
-          },
-          {
-            name: "🔥 เลขท้าย 2 ตัว",
-            value: backTwoDigits,
-          },
-        ],
-      },
-    ],
-  },
-});
+      })
+  )
+);
