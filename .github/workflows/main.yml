@@ -5,11 +5,10 @@ name: hope
 
 on:
   schedule:
-    - cron:  '45 9 16,1,10 * *'
+    - cron: "45 9 16,1 * *"
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -18,19 +17,19 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
-    - uses: pnpm/action-setup@v2.0.1
-      with:
-        version: 7.3.0
-        run_install: true
-    #  for dotenv module need to be a .env
-    - name: create .env
-      run: |
-        touch .env
-        echo SCRAPER_URL=${{ secrets.SCRAPER_URL }} >> .env
-        echo DISCORD_URL=${{ secrets.DISCORD_URL }} >> .env
-    - run: pnpm run task
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 7.3.0
+          run_install: true
+      #  for dotenv module need to be a .env
+      - name: create .env
+        run: |
+          touch .env
+          echo SCRAPER_URL=${{ secrets.SCRAPER_URL }} >> .env
+          echo DISCORD_URL=${{ secrets.DISCORD_URL }} >> .env
+      - run: pnpm run task
