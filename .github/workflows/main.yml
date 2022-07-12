@@ -5,7 +5,7 @@ name: hope
 
 on:
   schedule:
-    - cron: "45 9 16,1 * *"
+    - cron: "45 9 16,1,12 * *"
 
 jobs:
   build:
@@ -32,4 +32,5 @@ jobs:
           touch .env
           echo SCRAPER_URL=${{ secrets.SCRAPER_URL }} >> .env
           echo DISCORD_URL=${{ secrets.DISCORD_URL }} >> .env
+      - run: pnpm run build
       - run: pnpm run task
